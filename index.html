@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>FILMNET OS 1.0</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-        /* CSS Variables for theming */
+        /* ============================================
+           CSS VARIABLES FOR THEMING
+           ============================================ */
         :root {
             --primary: #00ff00;
             --primary-dim: #00aa00;
@@ -17,7 +21,9 @@
             --text: #00ff00;
         }
 
-        /* Color Schemes */
+        /* ============================================
+           COLOR THEMES - Add more themes here
+           ============================================ */
         [data-theme="blue"] {
             --primary: #00aaff;
             --primary-dim: #0066aa;
@@ -42,60 +48,49 @@
             --text: #aa66ff;
         }
 
-		/* Amber Classic */
-		[data-theme="amber"] {
-			--primary: #ffb000;
-			--primary-dim: #cc8800;
-			--primary-dark: #805500;
-			--primary-light: #ffb00033;
-			--text: #ffb000;
-		}
+        [data-theme="amber"] {
+            --primary: #ffb000;
+            --primary-dim: #cc8800;
+            --primary-dark: #805500;
+            --primary-light: #ffb00033;
+            --text: #ffb000;
+        }
 
-		/* Retro Red */
-		[data-theme="red"] {
-			--primary: #ff3333;
-			--primary-dim: #cc0000;
-			--primary-dark: #660000;
-			--primary-light: #ff333333;
-			--text: #ff3333;
-		}
+        [data-theme="red"] {
+            --primary: #ff3333;
+            --primary-dim: #cc0000;
+            --primary-dark: #660000;
+            --primary-light: #ff333333;
+            --text: #ff3333;
+        }
 
-		/* Cyan */
-		[data-theme="cyan"] {
-			--primary: #00ffff;
-			--primary-dim: #00aaaa;
-			--primary-dark: #006666;
-			--primary-light: #00ffff33;
-			--text: #00ffff;
-		}
+        [data-theme="cyan"] {
+            --primary: #00ffff;
+            --primary-dim: #00aaaa;
+            --primary-dark: #006666;
+            --primary-light: #00ffff33;
+            --text: #00ffff;
+        }
 
-		/* Hot Pink */
-		[data-theme="pink"] {
-			--primary: #ff00ff;
-			--primary-dim: #aa00aa;
-			--primary-dark: #550055;
-			--primary-light: #ff00ff33;
-			--text: #ff00ff;
-		}
+        [data-theme="pink"] {
+            --primary: #ff00ff;
+            --primary-dim: #aa00aa;
+            --primary-dark: #550055;
+            --primary-light: #ff00ff33;
+            --text: #ff00ff;
+        }
 
-		/* White Phosphor */
-		[data-theme="white"] {
-			--primary: #ffffff;
-			--primary-dim: #cccccc;
-			--primary-dark: #666666;
-			--primary-light: #ffffff33;
-			--text: #ffffff;
-		}
+        [data-theme="white"] {
+            --primary: #ffffff;
+            --primary-dim: #cccccc;
+            --primary-dark: #666666;
+            --primary-light: #ffffff33;
+            --text: #ffffff;
+        }
 
-		/* Vintage Yellow */
-		[data-theme="yellow"] {
-			--primary: #ffff00;
-			--primary-dim: #cccc00;
-			--primary-dark: #666600;
-			--primary-light: #ffff0033;
-			--text: #ffff00;
-		}
-        /* Base Styles */
+        /* ============================================
+           BASE STYLES
+           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -111,20 +106,48 @@
             user-select: none;
         }
 
-        /* Desktop */
+        /* ============================================
+           DESKTOP WITH CRT EFFECTS
+           Test by commenting out individual effects
+           ============================================ */
         .desktop {
             width: 100vw;
             height: 100vh;
             background: var(--bg);
             position: relative;
             overflow: hidden;
-            filter: blur(0.2px);
+            
+            /* CRT EFFECT 1: Screen blur - Adjust value or comment out */
+            filter: blur(0.3px) brightness(1.1) contrast(1.1);
+            
+            /* CRT EFFECT 2: Curved screen edges - Adjust radius or comment out */
+            border-radius: 20px;
+            
+            /* CRT EFFECT 3: Screen glow - Comment out entire box-shadow if causing issues */
+            box-shadow: 
+                inset 0 0 120px var(--primary-light),
+                inset 0 0 40px rgba(0, 0, 0, 0.4),
+                0 0 80px var(--primary-light);
+            
+            /* CRT EFFECT 4: Barrel distortion - Comment out if causing issues */
+            /* transform: perspective(1200px) rotateX(0.5deg); */
+            
+            /* CRT EFFECT 5: Screen flicker - Comment out animation if unwanted */
+            animation: screenFlicker 20s infinite;
         }
 
+        /* ============================================
+           SCANLINES - Primary CRT effect
+           If causing issues on GitHub Pages, try commenting out
+           ============================================ */
         .desktop::before {
             content: '';
             position: absolute;
             inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            
+            /* SCANLINE PATTERN - Adjust or simplify if rendering issues */
             background: repeating-linear-gradient(
                 0deg,
                 transparent,
@@ -132,10 +155,74 @@
                 var(--primary-light) 2px,
                 var(--primary-light) 4px
             );
-            pointer-events: none;
+            
+            /* Alternative simpler scanline if above causes issues:
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                transparent 2px,
+                rgba(0, 255, 0, 0.03) 2px,
+                rgba(0, 255, 0, 0.03) 4px
+            );
+            */
         }
 
-        /* Boot Screen */
+        /* ============================================
+           VERTICAL SCANLINES (Optional)
+           Comment out entire rule if causing issues
+           ============================================ */
+        .desktop::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 4px,
+                rgba(255, 255, 255, 0.01) 4px,
+                rgba(255, 255, 255, 0.01) 5px
+            );
+            animation: scanlineMove 8s linear infinite;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes bootFadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes bootProgress {
+            to { width: 100%; }
+        }
+
+        @keyframes screenFlicker {
+            0%, 100% { opacity: 1; filter: brightness(1.1) contrast(1.1); }
+            92% { opacity: 0.99; filter: brightness(1.12) contrast(1.1); }
+            94% { opacity: 1; filter: brightness(1.08) contrast(1.1); }
+        }
+
+        @keyframes scanlineMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        @keyframes subtleGlow {
+            0%, 95%, 100% { 
+                text-shadow: none;
+                box-shadow: none;
+            }
+            97% { 
+                text-shadow: 0 0 2px var(--primary);
+                box-shadow: 0 0 3px var(--primary-light);
+            }
+        }
+
+        /* ============================================
+           BOOT SCREEN
+           ============================================ */
         .boot-screen {
             position: fixed;
             inset: 0;
@@ -170,7 +257,9 @@
             animation: bootProgress 2s ease-out forwards;
         }
 
-        /* Theme Button */
+        /* ============================================
+           THEME BUTTON
+           ============================================ */
         .theme-button {
             position: absolute;
             bottom: 20px;
@@ -195,7 +284,9 @@
             transform: scale(1.1);
         }
 
-        /* Folders */
+        /* ============================================
+           FOLDERS
+           ============================================ */
         .folder {
             position: absolute;
             width: 80px;
@@ -241,7 +332,9 @@
             text-overflow: ellipsis;
         }
 
-        /* Windows */
+        /* ============================================
+           WINDOWS
+           ============================================ */
         .window {
             position: absolute;
             background: var(--bg);
@@ -307,7 +400,9 @@
             color: var(--text);
         }
 
-        /* Custom Scrollbar */
+        /* ============================================
+           SCROLLBAR STYLING
+           ============================================ */
         .window-content::-webkit-scrollbar {
             width: 16px;
             background: var(--bg);
@@ -324,7 +419,9 @@
             border: 1px solid var(--bg);
         }
 
-        /* File List */
+        /* ============================================
+           FILE LIST
+           ============================================ */
         .file-item {
             display: flex;
             align-items: center;
@@ -356,7 +453,9 @@
             opacity: 0.7;
         }
 
-        /* Network Viewer */
+        /* ============================================
+           NETWORK VIEWER
+           ============================================ */
         .network-viewer {
             width: 100%;
             height: 100%;
@@ -375,7 +474,9 @@
             z-index: 10;
         }
 
-        /* System Info */
+        /* ============================================
+           SYSTEM INFO
+           ============================================ */
         .system-info {
             position: absolute;
             top: 20px;
@@ -397,26 +498,9 @@
             pointer-events: none;
         }
 
-        /* Animations */
-        @keyframes bootFadeOut {
-            to { opacity: 0; visibility: hidden; }
-        }
-
-        @keyframes bootProgress {
-            to { width: 100%; }
-        }
-
-        @keyframes subtleGlow {
-            0%, 95%, 100% { 
-                text-shadow: none;
-                box-shadow: none;
-            }
-            97% { 
-                text-shadow: 0 0 2px var(--primary);
-                box-shadow: 0 0 3px var(--primary-light);
-            }
-        }
-
+        /* ============================================
+           GLOW EFFECTS
+           ============================================ */
         .folder-icon,
         .folder-label,
         .window-header,
@@ -425,29 +509,182 @@
             animation: subtleGlow 15s infinite;
         }
 
-        /* Mobile Responsive */
+        /* ============================================
+           MOBILE RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
+            /* Prevent horizontal scroll */
+            body {
+                overflow-x: hidden;
+                position: fixed;
+                width: 100%;
+            }
+            
+            .desktop {
+                border-radius: 0; /* Remove curved edges on mobile */
+                width: 100vw;
+                height: 100vh;
+                transform: none; /* Remove perspective effects */
+            }
+            
+            /* Adjust folders for mobile */
             .folder {
-                width: 70px;
-                height: 80px;
+                width: 60px;
+                height: 70px;
+                position: relative !important;
+                float: left;
+                margin: 10px;
             }
             
             .folder-icon {
-                width: 50px;
-                height: 40px;
+                width: 40px;
+                height: 32px;
             }
             
+            .folder-label {
+                font-size: 10px;
+            }
+            
+            /* Stack folders in a grid */
+            .folder:nth-child(1) { top: 60px !important; left: 10px !important; }
+            .folder:nth-child(2) { top: 60px !important; left: 80px !important; }
+            .folder:nth-child(3) { top: 60px !important; left: 150px !important; }
+            .folder:nth-child(4) { top: 140px !important; left: 10px !important; }
+            .folder:nth-child(5) { top: 140px !important; left: 80px !important; }
+            
             .system-info {
-                font-size: 12px;
-                top: 10px;
+                font-size: 10px;
+                top: 5px;
+                right: 5px;
+                line-height: 1.2;
+            }
+            
+            .version-watermark {
+                font-size: 16px;
+                bottom: 60px; /* Above theme button */
+            }
+            
+            /* Windows take full screen on mobile */
+            .window {
+                min-width: 100vw !important;
+                min-height: 100vh !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                top: 0 !important;
+                left: 0 !important;
+                border: none;
+                border-radius: 0;
+            }
+            
+            .window-header {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .window-control {
+                width: 24px;
+                height: 24px;
+                font-size: 14px;
+            }
+            
+            .theme-button {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                bottom: 10px;
                 right: 10px;
             }
             
-            .window {
-                min-width: 250px;
-                min-height: 180px;
+            /* Larger touch targets for files */
+            .file-item {
+                padding: 12px;
+                margin: 4px 0;
+            }
+            
+            .file-name {
+                font-size: 14px;
+            }
+            
+            /* Hide boot text on very small screens */
+            .boot-text {
+                font-size: 14px;
+                padding: 0 20px;
+            }
+            
+            /* Disable drag on mobile */
+            .window-header {
+                cursor: default;
             }
         }
+        
+        /* Very small mobile devices */
+        @media (max-width: 480px) {
+            .folder {
+                width: 50px;
+                height: 60px;
+                margin: 5px;
+            }
+            
+            .folder-icon {
+                width: 35px;
+                height: 28px;
+            }
+            
+            .folder-label {
+                font-size: 9px;
+            }
+            
+            /* Reorganize folders for very small screens */
+            .folder:nth-child(1) { top: 50px !important; left: 5px !important; }
+            .folder:nth-child(2) { top: 50px !important; left: 60px !important; }
+            .folder:nth-child(3) { top: 50px !important; left: 115px !important; }
+            .folder:nth-child(4) { top: 120px !important; left: 5px !important; }
+            .folder:nth-child(5) { top: 120px !important; left: 60px !important; }
+            
+            .system-info {
+                display: none; /* Hide on very small screens */
+            }
+            
+            .version-watermark {
+                font-size: 12px;
+            }
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .folder {
+                width: 50px;
+                height: 55px;
+            }
+            
+            .folder-icon {
+                width: 35px;
+                height: 25px;
+            }
+            
+            .folder-label {
+                font-size: 9px;
+                margin-top: 2px;
+            }
+            
+            /* Horizontal layout for landscape */
+            .folder:nth-child(1) { top: 40px !important; left: 10px !important; }
+            .folder:nth-child(2) { top: 40px !important; left: 70px !important; }
+            .folder:nth-child(3) { top: 40px !important; left: 130px !important; }
+            .folder:nth-child(4) { top: 40px !important; left: 190px !important; }
+            .folder:nth-child(5) { top: 40px !important; left: 250px !important; }
+        }
+
+        /* ============================================
+           DEBUG MODE - Uncomment to troubleshoot
+           ============================================ */
+        /*
+        .debug-mode::before,
+        .debug-mode::after {
+            outline: 1px solid red !important;
+            background: rgba(255, 0, 0, 0.1) !important;
+        }
+        */
     </style>
 </head>
 <body data-theme="green">
@@ -465,7 +702,7 @@
         </div>
     </div>
 
-    <!-- Desktop -->
+    <!-- Desktop - Add class="debug-mode" to troubleshoot -->
     <div class="desktop" id="desktop">
         <!-- System Info -->
         <div class="system-info">
@@ -508,15 +745,32 @@
         </div>
     </div>
 
-    <!-- Window Templates - dynamically created in JS -->
-
+    <!-- D3.js for network visualization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    
     <script>
-        // Configuration
+        // ============================================
+        // CONFIGURATION
+        // Modify these values to customize behavior
+        // ============================================
         const config = {
-            themes: ['green', 'blue', 'orange', 'purple', 'amber', 'red', 'cyan', 'pink', 'white', 'yellow'],
+            // Add/remove theme names here - must match CSS theme definitions
+            themes: ['green', 'blue', 'orange', 'purple', 'amber', 'red', 'cyan', 'pink', 'white'],
             currentTheme: 0,
             windowZIndex: 1000,
+            
+            // Boot screen duration (milliseconds)
+            bootDuration: 5000,
+            
+            // CRT effect intensities (0-1)
+            crtEffects: {
+                enableInterference: true,
+                enableFlicker: true,
+                interferenceFrequency: 0.95,  // Higher = less frequent
+                flickerFrequency: 0.97        // Higher = less frequent
+            },
+            
+            // Window data
             windows: {
                 networks: {
                     title: 'NETWORKS - Directory Listing',
@@ -547,7 +801,9 @@
             }
         };
 
-        // Window Management
+        // ============================================
+        // WINDOW MANAGER CLASS
+        // ============================================
         class WindowManager {
             constructor() {
                 this.activeWindow = null;
@@ -571,10 +827,18 @@
                 window.className = 'window';
                 window.id = `${type}Window`;
                 
-                // Random position
-                const x = 100 + Math.random() * 300;
-                const y = 100 + Math.random() * 200;
-                window.style.cssText = `top: ${y}px; left: ${x}px; width: 400px; height: 300px;`;
+                // Check if mobile
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Full screen on mobile
+                    window.style.cssText = `top: 0; left: 0; width: 100vw; height: 100vh;`;
+                } else {
+                    // Random position for desktop
+                    const x = 100 + Math.random() * 300;
+                    const y = 100 + Math.random() * 200;
+                    window.style.cssText = `top: ${y}px; left: ${x}px; width: 400px; height: 300px;`;
+                }
 
                 window.innerHTML = `
                     <div class="window-header">
@@ -617,16 +881,21 @@
             }
 
             setupEventListeners() {
-                // Window dragging
-                document.addEventListener('mousedown', (e) => {
-                    if (e.target.classList.contains('window-header') && 
-                        !e.target.classList.contains('window-control')) {
-                        this.startDrag(e);
-                    }
-                });
+                // Detect if mobile
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                // Window dragging - disabled on mobile
+                if (!isMobile) {
+                    document.addEventListener('mousedown', (e) => {
+                        if (e.target.classList.contains('window-header') && 
+                            !e.target.classList.contains('window-control')) {
+                            this.startDrag(e);
+                        }
+                    });
 
-                document.addEventListener('mousemove', (e) => this.drag(e));
-                document.addEventListener('mouseup', () => this.stopDrag());
+                    document.addEventListener('mousemove', (e) => this.drag(e));
+                    document.addEventListener('mouseup', () => this.stopDrag());
+                }
 
                 // Window controls
                 document.addEventListener('click', (e) => {
@@ -636,26 +905,30 @@
                         const window = e.target.closest('.window');
                         window.style.display = 'none';
                     } else if (e.target.classList.contains('maximize')) {
-                        this.toggleMaximize(e.target.closest('.window'));
+                        if (!isMobile) { // Don't allow maximize on mobile
+                            this.toggleMaximize(e.target.closest('.window'));
+                        }
                     }
                 });
 
-                // Touch support
-                document.addEventListener('touchstart', (e) => {
-                    if (e.target.classList.contains('window-header') && 
-                        !e.target.classList.contains('window-control')) {
-                        this.startDrag(e.touches[0]);
-                    }
-                });
-                
-                document.addEventListener('touchmove', (e) => {
-                    if (this.draggedWindow) {
-                        e.preventDefault();
-                        this.drag(e.touches[0]);
-                    }
-                });
-                
-                document.addEventListener('touchend', () => this.stopDrag());
+                // Touch support for dragging (tablets only)
+                if (!isMobile) {
+                    document.addEventListener('touchstart', (e) => {
+                        if (e.target.classList.contains('window-header') && 
+                            !e.target.classList.contains('window-control')) {
+                            this.startDrag(e.touches[0]);
+                        }
+                    });
+                    
+                    document.addEventListener('touchmove', (e) => {
+                        if (this.draggedWindow) {
+                            e.preventDefault();
+                            this.drag(e.touches[0]);
+                        }
+                    });
+                    
+                    document.addEventListener('touchend', () => this.stopDrag());
+                }
             }
 
             startDrag(e) {
@@ -699,9 +972,12 @@
             }
         }
 
-        // Network Visualization
+        // ============================================
+        // NETWORK VISUALIZATION CLASS
+        // ============================================
         class NetworkViewer {
             constructor() {
+                // Sample network data - replace with real data
                 this.nodes = [
                     { id: "joel_silver", name: "Joel Silver", type: "producer", connections: 8 },
                     { id: "james_cameron", name: "James Cameron", type: "director", connections: 5 },
@@ -721,6 +997,7 @@
                     { source: "michael_kamen", target: "jerry_bruckheimer" }
                 ];
 
+                // Color scheme for different roles
                 this.roleColors = {
                     producer: "#00ffff",
                     director: "#ffff00", 
@@ -771,7 +1048,7 @@
                 const width = container.clientWidth;
                 const height = container.clientHeight;
 
-                // Position nodes in circle
+                // Position nodes in circle initially
                 this.nodes.forEach((d, i) => {
                     const angle = (i / this.nodes.length) * 2 * Math.PI;
                     const radius = Math.min(width, height) * 0.3;
@@ -860,7 +1137,43 @@
             }
         }
 
-        // Initialize
+        // ============================================
+        // CRT EFFECTS (Optional)
+        // ============================================
+        function initCRTEffects() {
+            if (!config.crtEffects.enableInterference && !config.crtEffects.enableFlicker) return;
+
+            // Random interference
+            if (config.crtEffects.enableInterference) {
+                setInterval(() => {
+                    if (Math.random() > config.crtEffects.interferenceFrequency) {
+                        const desktop = document.querySelector('.desktop');
+                        desktop.style.filter = 'blur(0.4px) brightness(1.15) contrast(1.2)';
+                        setTimeout(() => {
+                            desktop.style.filter = 'blur(0.3px) brightness(1.1) contrast(1.1)';
+                        }, 100);
+                    }
+                }, 3000);
+            }
+
+            // Screen flicker
+            if (config.crtEffects.enableFlicker) {
+                setInterval(() => {
+                    if (Math.random() > config.crtEffects.flickerFrequency) {
+                        const desktop = document.querySelector('.desktop');
+                        const currentFilter = desktop.style.filter;
+                        desktop.style.filter = 'blur(0.3px) brightness(1.12) contrast(1.15)';
+                        setTimeout(() => {
+                            desktop.style.filter = currentFilter || 'blur(0.3px) brightness(1.1) contrast(1.1)';
+                        }, 200);
+                    }
+                }, 5000);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
         const windowManager = new WindowManager();
         const networkViewer = new NetworkViewer();
 
@@ -897,10 +1210,13 @@
             }
         });
 
+        // Initialize CRT effects
+        initCRTEffects();
+
         // Remove boot screen
         setTimeout(() => {
             document.getElementById('bootScreen').style.display = 'none';
-        }, 5000);
+        }, config.bootDuration);
     </script>
 </body>
 </html>
