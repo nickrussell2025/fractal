@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <title>FILMNET OS 1.0</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-        /* ============================================
-           CSS VARIABLES FOR THEMING
-           ============================================ */
+        /* CSS Variables */
         :root {
             --primary: #00ff00;
             --primary-dim: #00aa00;
@@ -21,208 +17,75 @@
             --text: #00ff00;
         }
 
-        /* ============================================
-           COLOR THEMES - Add more themes here
-           ============================================ */
-        [data-theme="blue"] {
-            --primary: #00aaff;
-            --primary-dim: #0066aa;
-            --primary-dark: #003366;
-            --primary-light: #00aaff33;
-            --text: #00aaff;
-        }
+        /* Theme Definitions */
+        [data-theme="blue"] { --primary: #00aaff; --primary-dim: #0066aa; --primary-dark: #003366; --primary-light: #00aaff33; --text: #00aaff; }
+        [data-theme="orange"] { --primary: #ff8800; --primary-dim: #aa5500; --primary-dark: #663300; --primary-light: #ff880033; --text: #ff8800; }
+        [data-theme="purple"] { --primary: #aa66ff; --primary-dim: #6633aa; --primary-dark: #331166; --primary-light: #aa66ff33; --text: #aa66ff; }
+        [data-theme="amber"] { --primary: #ffb000; --primary-dim: #cc8800; --primary-dark: #805500; --primary-light: #ffb00033; --text: #ffb000; }
+        [data-theme="red"] { --primary: #ff3333; --primary-dim: #cc0000; --primary-dark: #660000; --primary-light: #ff333333; --text: #ff3333; }
+        [data-theme="cyan"] { --primary: #00ffff; --primary-dim: #00aaaa; --primary-dark: #006666; --primary-light: #00ffff33; --text: #00ffff; }
 
-        [data-theme="orange"] {
-            --primary: #ff8800;
-            --primary-dim: #aa5500;
-            --primary-dark: #663300;
-            --primary-light: #ff880033;
-            --text: #ff8800;
-        }
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; }
+        body { font-family: 'VT323', monospace; background: var(--bg); user-select: none; }
 
-        [data-theme="purple"] {
-            --primary: #aa66ff;
-            --primary-dim: #6633aa;
-            --primary-dark: #331166;
-            --primary-light: #aa66ff33;
-            --text: #aa66ff;
-        }
-
-        [data-theme="amber"] {
-            --primary: #ffb000;
-            --primary-dim: #cc8800;
-            --primary-dark: #805500;
-            --primary-light: #ffb00033;
-            --text: #ffb000;
-        }
-
-        [data-theme="red"] {
-            --primary: #ff3333;
-            --primary-dim: #cc0000;
-            --primary-dark: #660000;
-            --primary-light: #ff333333;
-            --text: #ff3333;
-        }
-
-        [data-theme="cyan"] {
-            --primary: #00ffff;
-            --primary-dim: #00aaaa;
-            --primary-dark: #006666;
-            --primary-light: #00ffff33;
-            --text: #00ffff;
-        }
-
-        [data-theme="pink"] {
-            --primary: #ff00ff;
-            --primary-dim: #aa00aa;
-            --primary-dark: #550055;
-            --primary-light: #ff00ff33;
-            --text: #ff00ff;
-        }
-
-        [data-theme="white"] {
-            --primary: #ffffff;
-            --primary-dim: #cccccc;
-            --primary-dark: #666666;
-            --primary-light: #ffffff33;
-            --text: #ffffff;
-        }
-
-        /* ============================================
-           BASE STYLES
-           ============================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'VT323', monospace;
-            background: var(--bg);
-            height: 100vh;
-            overflow: hidden;
-            cursor: default;
-            user-select: none;
-        }
-
-        /* ============================================
-           DESKTOP WITH CRT EFFECTS
-           Test by commenting out individual effects
-           ============================================ */
-        .desktop {
+        /* Desktop Container - OFF by default */
+        #desktop {
             width: 100vw;
             height: 100vh;
-            background: var(--bg);
+            background: var(--primary-dark);
             position: relative;
             overflow: hidden;
-            
-            /* CRT EFFECT 1: Screen blur - Adjust value or comment out */
-            filter: blur(0.3px) brightness(1.1) contrast(1.1);
-            
-            /* CRT EFFECT 2: Curved screen edges - Adjust radius or comment out */
-            border-radius: 50px;
-            
-            /* CRT EFFECT 3: Screen glow - Comment out entire box-shadow if causing issues */
-            /* box-shadow: 
-                inset 0 0 120px var(--primary-light),
-                inset 0 0 40px rgba(0, 0, 0, 0.4),
-                0 0 80px var(--primary-light);
-            
-            /* CRT EFFECT 4: Barrel distortion - Comment out if causing issues */
-            /* transform: perspective(1200px) rotateX(0.5deg); */
-            
-            /* CRT EFFECT 5: Screen flicker - Comment out animation if unwanted */
-            /* animation: screenFlicker 20s infinite;*/
+            transition: all 0.3s;
         }
 
-        /* ============================================
-           SCANLINES - Primary CRT effect
-           If causing issues on GitHub Pages, try commenting out
-           ============================================ */
-        .desktop::before {
-            content: '';
+        /* CRT OFF - Clean dark background */
+        #desktop[data-crt="off"] {
+            background: var(--primary-dark);
+            filter: none;
+        }
+        #desktop[data-crt="off"] .scanlines {
+            display: none;
+        }
+
+        /* CRT MINIMAL - Subtle effects */
+        #desktop[data-crt="minimal"] {
+            background: var(--bg);
+            filter: blur(0.2px);
+        }
+        #desktop[data-crt="minimal"] .scanlines {
+            display: block;
+            opacity: 0.3;
+        }
+
+        /* CRT MEDIUM - Full effects */
+        #desktop[data-crt="medium"] {
+            background: var(--bg);
+            filter: blur(0.3px) brightness(1.05) contrast(1.05);
+        }
+        #desktop[data-crt="medium"] .scanlines {
+            display: block;
+            opacity: 0.6;
+        }
+
+        /* Scanlines overlay */
+        .scanlines {
             position: absolute;
             inset: 0;
             pointer-events: none;
-            z-index: 1;
-            
-            /* SCANLINE PATTERN - Adjust or simplify if rendering issues */
             background: repeating-linear-gradient(
                 0deg,
-                transparent,
+                transparent 0,
                 transparent 2px,
                 var(--primary-light) 2px,
                 var(--primary-light) 4px
             );
-            
-            /* Alternative simpler scanline if above causes issues:
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px,
-                transparent 2px,
-                rgba(0, 255, 0, 0.03) 2px,
-                rgba(0, 255, 0, 0.03) 4px
-            );
-            */
+            display: none;
+            z-index: 1;
         }
 
-        /* ============================================
-           VERTICAL SCANLINES (Optional)
-           Comment out entire rule if causing issues
-           ============================================ */
-        /*.desktop::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 2;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 4px,
-                rgba(255, 255, 255, 0.01) 4px,
-                rgba(255, 255, 255, 0.01) 5px
-            );
-            animation: scanlineMove 8s linear infinite;
-        }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
-        @keyframes bootFadeOut {
-            to { opacity: 0; visibility: hidden; }
-        }
-
-        @keyframes bootProgress {
-            to { width: 100%; }
-        }
-
-        /*@keyframes screenFlicker {
-            0%, 100% { opacity: 1; filter: brightness(1.1) contrast(1.1); }
-            92% { opacity: 0.99; filter: brightness(1.12) contrast(1.1); }
-            94% { opacity: 1; filter: brightness(1.08) contrast(1.1); }
-        }
-
-        @keyframes scanlineMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(10px); }
-        }
-
-        @keyframes subtleGlow {
-            0%, 95%, 100% { 
-                text-shadow: none;
-                box-shadow: none;
-            }
-            97% { 
-                text-shadow: 0 0 2px var(--primary);
-                box-shadow: 0 0 3px var(--primary-light);
-            }
-        }
-
-        /* ============================================
-           BOOT SCREEN
-           ============================================ */
+        /* Boot Screen */
         .boot-screen {
             position: fixed;
             inset: 0;
@@ -233,83 +96,75 @@
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            filter: blur(0.6px);
-            animation: bootFadeOut 3s ease-out 2s forwards;
         }
+        .boot-screen.hidden { display: none; }
+        .boot-text { font-size: 18px; text-align: center; line-height: 1.6; padding: 0 20px; }
+        .boot-progress { margin-top: 20px; width: 300px; height: 20px; border: 1px solid var(--primary); }
+        .boot-progress-bar { height: 100%; background: var(--primary); width: 0; animation: load 2s forwards; }
+        @keyframes load { to { width: 100%; } }
 
-        .boot-text {
-            font-size: 18px;
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        .boot-progress {
-            margin-top: 20px;
-            width: 300px;
-            height: 20px;
-            border: 1px solid var(--primary);
-            background: var(--primary-light);
-        }
-
-        .boot-progress-bar {
-            height: 100%;
-            background: var(--primary);
-            animation: bootProgress 2s ease-out forwards;
-        }
-
-        /* ============================================
-           THEME BUTTON
-           ============================================ */
-        .theme-button {
+        /* Controls */
+        .controls {
             position: absolute;
             bottom: 20px;
-            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 40px);
+            left: 20px;
+            z-index: 100;
+        }
+        .btn {
             width: 40px;
             height: 40px;
-            background: var(--primary);
             border: 1px solid var(--primary);
+            background: var(--bg);
+            color: var(--primary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            color: var(--bg);
-            transition: all 0.3s;
-            z-index: 100;
+            font: 12px 'VT323', monospace;
+        }
+        .btn:hover { background: var(--primary); color: var(--bg); }
+        .btn.active { background: var(--primary); color: var(--bg); }
+        .crt-controls { display: flex; gap: 10px; }
+        .theme-btn { background: var(--primary); color: var(--bg); }
+        .theme-btn:hover { background: var(--bg); color: var(--primary); }
+
+        /* UI Elements */
+        .system-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--text);
+            font-size: 14px;
+            text-align: right;
+            opacity: 0.7;
+        }
+        .watermark {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            color: var(--primary-dim);
+            font-size: 24px;
+            opacity: 0.3;
         }
 
-        .theme-button:hover {
-            background: var(--bg);
-            color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        /* ============================================
-           FOLDERS
-           ============================================ */
+        /* Folders */
         .folder {
             position: absolute;
             width: 80px;
-            height: 90px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.4s;
+            text-align: center;
         }
-
-        .folder:hover {
-            transform: scale(1.05);
-        }
-
         .folder-icon {
             width: 60px;
             height: 48px;
             background: var(--primary);
             border: 1px solid var(--primary);
+            margin: 0 auto 8px;
             position: relative;
         }
-
         .folder-icon::before {
             content: '';
             position: absolute;
@@ -321,902 +176,309 @@
             border: 1px solid var(--primary);
             border-bottom: none;
         }
+        .folder-label { color: var(--text); font-size: 12px; }
+        .folder:hover { transform: scale(1.05); }
 
-        .folder-label {
-            margin-top: 8px;
-            color: var(--text);
-            font-size: 12px;
-            text-align: center;
-            max-width: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* ============================================
-           WINDOWS
-           ============================================ */
+        /* Windows */
         .window {
             position: absolute;
             background: var(--bg);
             border: 1px solid var(--primary);
+            display: none;
             min-width: 300px;
             min-height: 200px;
-            display: none;
-            filter: blur(0.3px);
-            opacity: 0;
-            transform: scale(0.99);
-            transition: all 0.15s;
-            resize: both;
-            overflow: auto;
         }
-
-        .window.active {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-        }
-
+        .window.active { display: block; }
         .window-header {
             background: var(--primary);
             color: var(--bg);
             padding: 8px 12px;
-            font-size: 14px;
-            border-bottom: 1px solid var(--primary);
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: move;
         }
-
-        .window-controls {
-            display: flex;
-            gap: 6px;
-        }
-
-        .window-control {
+        .window-close {
             width: 18px;
             height: 18px;
             border: 1px solid var(--bg);
             background: var(--primary);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-            transition: all 0.2s;
+            text-align: center;
+            line-height: 16px;
         }
+        .window-close:hover { background: var(--bg); color: var(--primary); }
+        .window-content { padding: 16px; color: var(--text); height: calc(100% - 35px); overflow-y: auto; }
 
-        .window-control:hover {
-            background: var(--bg);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .window-content {
-            padding: 16px;
-            height: calc(100% - 40px);
-            overflow-y: auto;
-            color: var(--text);
-        }
-
-        /* ============================================
-           SCROLLBAR STYLING
-           ============================================ */
-        .window-content::-webkit-scrollbar {
-            width: 16px;
-            background: var(--bg);
-        }
-
-        .window-content::-webkit-scrollbar-track {
-            background: var(--bg);
-            border: 1px solid var(--primary);
-            border-left: none;
-        }
-
-        .window-content::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border: 1px solid var(--bg);
-        }
-
-        /* ============================================
-           FILE LIST
-           ============================================ */
+        /* Files */
         .file-item {
             display: flex;
             align-items: center;
             padding: 8px 12px;
-            background: var(--bg);
             border: 1px solid var(--primary);
-            cursor: pointer;
             margin: 2px 0;
+            cursor: pointer;
         }
+        .file-item:hover { background: var(--primary); color: var(--bg); }
+        .file-icon { margin-right: 12px; }
+        .file-name { flex: 1; }
+        .file-size { font-size: 11px; opacity: 0.7; }
 
-        .file-item:hover {
-            background: var(--primary);
-            color: var(--bg);
-        }
-
-        .file-icon {
-            margin-right: 12px;
-            font-size: 16px;
-            width: 20px;
-        }
-
-        .file-name {
-            flex: 1;
-            font-size: 13px;
-        }
-
-        .file-size {
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        /* ============================================
-           NETWORK VIEWER
-           ============================================ */
-        .network-viewer {
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            position: relative;
-        }
-
-        .network-info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--bg);
-            padding: 8px;
-            border: 1px solid var(--primary);
-            font-size: 12px;
-            z-index: 10;
-        }
-
-        /* ============================================
-           SYSTEM INFO
-           ============================================ */
-        .system-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: var(--text);
-            font-size: 14px;
-            text-align: right;
-            opacity: 0.7;
-        }
-
-        .version-watermark {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: var(--primary-dark);
-            font-size: 24px;
-            font-weight: bold;
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        /* ============================================
-           GLOW EFFECTS
-           ============================================ */
-        /*.folder-icon,
-        .folder-label,
-        .window-header,
-        .window-content,
-        .file-item {
-            animation: subtleGlow 15s infinite;
-        }
-
-        /* ============================================
-           MOBILE RESPONSIVE
-           ============================================ */
+        /* Mobile */
         @media (max-width: 768px) {
-            /* Prevent horizontal scroll */
-            body {
-                overflow-x: hidden;
-                position: fixed;
-                width: 100%;
-            }
-            
-            .desktop {
-                border-radius: 0; /* Remove curved edges on mobile */
-                width: 100vw;
-                height: 100vh;
-                transform: none; /* Remove perspective effects */
-            }
-            
-            /* Adjust folders for mobile */
-            .folder {
-                width: 60px;
-                height: 70px;
-                position: relative !important;
-                float: left;
-                margin: 10px;
-            }
-            
-            .folder-icon {
-                width: 40px;
-                height: 32px;
-            }
-            
-            .folder-label {
-                font-size: 10px;
-            }
-            
-            /* Stack folders in a grid */
-            .folder:nth-child(1) { top: 60px !important; left: 10px !important; }
-            .folder:nth-child(2) { top: 60px !important; left: 80px !important; }
-            .folder:nth-child(3) { top: 60px !important; left: 150px !important; }
-            .folder:nth-child(4) { top: 140px !important; left: 10px !important; }
-            .folder:nth-child(5) { top: 140px !important; left: 80px !important; }
-            
-            .system-info {
-                font-size: 10px;
-                top: 5px;
-                right: 5px;
-                line-height: 1.2;
-            }
-            
-            .version-watermark {
-                font-size: 16px;
-                bottom: 60px; /* Above theme button */
-            }
-            
-            /* Windows take full screen on mobile */
-            .window {
-                min-width: 100vw !important;
-                min-height: 100vh !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                top: 0 !important;
-                left: 0 !important;
-                border: none;
-                border-radius: 0;
-            }
-            
-            .window-header {
-                padding: 12px;
-                font-size: 16px;
-            }
-            
-            .window-control {
-                width: 24px;
-                height: 24px;
-                font-size: 14px;
-            }
-            
-            .theme-button {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-                bottom: 10px;
-                right: 10px;
-            }
-            
-            /* Larger touch targets for files */
-            .file-item {
-                padding: 12px;
-                margin: 4px 0;
-            }
-            
-            .file-name {
-                font-size: 14px;
-            }
-            
-            /* Hide boot text on very small screens */
-            .boot-text {
-                font-size: 14px;
-                padding: 0 20px;
-            }
-            
-            /* Disable drag on mobile */
-            .window-header {
-                cursor: default;
-            }
+            #desktop { filter: none !important; }
+            .scanlines { display: none !important; }
+            .folder { width: 60px; }
+            .folder-icon { width: 40px; height: 32px; }
+            .folder-label { font-size: 10px; }
+            .system-info { font-size: 10px; top: 5px; right: 5px; }
+            .watermark { font-size: 16px; }
+            .window { width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; border: none; }
+            .window-header { cursor: default; }
+            .controls { bottom: 10px; }
+            .btn { width: 35px; height: 35px; font-size: 10px; }
         }
-        
-        /* Very small mobile devices */
-        @media (max-width: 480px) {
-            .folder {
-                width: 50px;
-                height: 60px;
-                margin: 5px;
-            }
-            
-            .folder-icon {
-                width: 35px;
-                height: 28px;
-            }
-            
-            .folder-label {
-                font-size: 9px;
-            }
-            
-            /* Reorganize folders for very small screens */
-            .folder:nth-child(1) { top: 50px !important; left: 5px !important; }
-            .folder:nth-child(2) { top: 50px !important; left: 60px !important; }
-            .folder:nth-child(3) { top: 50px !important; left: 115px !important; }
-            .folder:nth-child(4) { top: 120px !important; left: 5px !important; }
-            .folder:nth-child(5) { top: 120px !important; left: 60px !important; }
-            
-            .system-info {
-                display: none; /* Hide on very small screens */
-            }
-            
-            .version-watermark {
-                font-size: 12px;
-            }
-        }
-        
-        /* Landscape orientation adjustments */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .folder {
-                width: 50px;
-                height: 55px;
-            }
-            
-            .folder-icon {
-                width: 35px;
-                height: 25px;
-            }
-            
-            .folder-label {
-                font-size: 9px;
-                margin-top: 2px;
-            }
-            
-            /* Horizontal layout for landscape */
-            .folder:nth-child(1) { top: 40px !important; left: 10px !important; }
-            .folder:nth-child(2) { top: 40px !important; left: 70px !important; }
-            .folder:nth-child(3) { top: 40px !important; left: 130px !important; }
-            .folder:nth-child(4) { top: 40px !important; left: 190px !important; }
-            .folder:nth-child(5) { top: 40px !important; left: 250px !important; }
-        }
-
-        /* ============================================
-           DEBUG MODE - Uncomment to troubleshoot
-           ============================================ */
-        /*
-        .debug-mode::before,
-        .debug-mode::after {
-            outline: 1px solid red !important;
-            background: rgba(255, 0, 0, 0.1) !important;
-        }
-        */
     </style>
 </head>
 <body data-theme="green">
     <!-- Boot Screen -->
-    <div class="boot-screen" id="bootScreen">
+    <div class="boot-screen" id="boot">
         <div class="boot-text">
             FILMNET OS 1.0<br>
             Collaborative Intelligence System<br>
-            Initializing pattern recognition modules...<br>
-            Loading network topology engine...<br>
-            Establishing anonymous session...
+            Loading...
         </div>
-        <div class="boot-progress">
-            <div class="boot-progress-bar"></div>
-        </div>
+        <div class="boot-progress"><div class="boot-progress-bar"></div></div>
     </div>
 
-    <!-- Desktop - Add class="debug-mode" to troubleshoot -->
-    <div class="desktop" id="desktop">
+    <!-- Desktop - OFF by default -->
+    <div id="desktop" data-crt="off">
+        <div class="scanlines"></div>
+        
         <!-- System Info -->
         <div class="system-info">
             FILMNET OS 1.0<br>
             BUILD 1982.11.25<br>
             ANONYMOUS USER<br>
-            <span id="systemTime"></span>
+            <span id="time"></span>
         </div>
 
-        <!-- Version Watermark -->
-        <div class="version-watermark">FILMNET OS 1.0</div>
+        <!-- Watermark -->
+        <div class="watermark">FILMNET OS 1.0</div>
 
-        <!-- Theme Button -->
-        <button class="theme-button" id="themeButton" title="Change color scheme">◐</button>
+        <!-- Controls -->
+        <div class="controls">
+            <div class="crt-controls">
+                <button class="btn active" onclick="setCRT('off')">OFF</button>
+                <button class="btn" onclick="setCRT('minimal')">MIN</button>
+                <button class="btn" onclick="setCRT('medium')">MED</button>
+            </div>
+            <button class="btn theme-btn" onclick="cycleTheme()">◐</button>
+        </div>
 
-        <!-- Desktop Folders -->
-        <div class="folder" style="top: 80px; left: 20px;" data-folder="networks">
+        <!-- Folders -->
+        <div class="folder" style="top: 80px; left: 20px;" onclick="openWindow('networks')">
             <div class="folder-icon"></div>
             <div class="folder-label">NETWORKS</div>
         </div>
-
-        <div class="folder" style="top: 180px; left: 20px;" data-folder="analysis">
+        <div class="folder" style="top: 180px; left: 20px;" onclick="openWindow('analysis')">
             <div class="folder-icon"></div>
             <div class="folder-label">ANALYSIS</div>
         </div>
-
-        <div class="folder" style="top: 280px; left: 20px;" data-folder="insights">
+        <div class="folder" style="top: 280px; left: 20px;" onclick="openWindow('insights')">
             <div class="folder-icon"></div>
             <div class="folder-label">INSIGHTS</div>
         </div>
-
-        <div class="folder" style="top: 380px; left: 20px;" data-folder="collaborative">
-            <div class="folder-icon"></div>
-            <div class="folder-label">COLLAB</div>
-        </div>
-
-        <div class="folder" style="top: 480px; left: 20px;" data-folder="system">
-            <div class="folder-icon"></div>
-            <div class="folder-label">SYSTEM</div>
-        </div>
     </div>
 
-    <!-- D3.js for network visualization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    
     <script>
-        // ============================================
-        // CONFIGURATION
-        // Modify these values to customize behavior
-        // ============================================
-        const config = {
-            // Add/remove theme names here - must match CSS theme definitions
-            themes: ['green', 'blue', 'orange', 'purple', 'amber', 'red', 'cyan', 'pink', 'white'],
+        // App state
+        const state = {
+            themes: ['green', 'blue', 'orange', 'purple', 'amber', 'red', 'cyan'],
             currentTheme: 0,
-            windowZIndex: 1000,
-            
-            // Boot screen duration (milliseconds)
-            bootDuration: 5000,
-            
-            // CRT effect intensities (0-1)
-            crtEffects: {
-                enableInterference: true,
-                enableFlicker: true,
-                interferenceFrequency: 0.95,  // Higher = less frequent
-                flickerFrequency: 0.97        // Higher = less frequent
-            },
-            
-            // Window data
-            windows: {
-                networks: {
-                    title: 'NETWORKS - Directory Listing',
-                    files: [
-                        { icon: '▲', name: 'complete_network.dat', size: '847KB' },
-                        { icon: '▲', name: 'directors_only.dat', size: '234KB' },
-                        { icon: '▲', name: 'producers_web.dat', size: '156KB' },
-                        { icon: '▲', name: 'composers_cluster.dat', size: '98KB' }
-                    ]
-                },
-                analysis: {
-                    title: 'ANALYSIS - Directory Listing',
-                    files: [
-                        { icon: '■', name: 'centrality_metrics.rpt', size: '45KB' },
-                        { icon: '■', name: 'cluster_analysis.rpt', size: '67KB' },
-                        { icon: '■', name: 'influence_mapping.rpt', size: '89KB' }
-                    ]
-                },
-                insights: {
-                    title: 'INSIGHTS - Directory Listing',
-                    files: [
-                        { icon: '◆', name: 'joel_silver_empire.txt', size: '12KB' },
-                        { icon: '◆', name: 'cameron_network.txt', size: '8KB' },
-                        { icon: '◆', name: '80s_action_dna.txt', size: '15KB' },
-                        { icon: '◆', name: 'bruckheimer_evolution.txt', size: '9KB' }
-                    ]
-                }
+            zIndex: 1000,
+            draggedWindow: null,
+            files: {
+                networks: [
+                    { icon: '▲', name: 'complete_network.dat', size: '847KB' },
+                    { icon: '▲', name: 'directors_only.dat', size: '234KB' }
+                ],
+                analysis: [
+                    { icon: '■', name: 'centrality_metrics.rpt', size: '45KB' },
+                    { icon: '■', name: 'cluster_analysis.rpt', size: '67KB' }
+                ],
+                insights: [
+                    { icon: '◆', name: 'joel_silver_empire.txt', size: '12KB' },
+                    { icon: '◆', name: '80s_action_dna.txt', size: '15KB' }
+                ]
             }
         };
 
-        // ============================================
-        // WINDOW MANAGER CLASS
-        // ============================================
-        class WindowManager {
-            constructor() {
-                this.activeWindow = null;
-                this.draggedWindow = null;
-                this.dragOffset = { x: 0, y: 0 };
-                this.windowPositions = {};
-                this.setupEventListeners();
-            }
-
-            createWindow(type) {
-                const existingWindow = document.getElementById(`${type}Window`);
-                if (existingWindow) {
-                    this.openWindow(existingWindow);
-                    return;
-                }
-
-                const windowData = config.windows[type];
-                if (!windowData) return;
-
-                const window = document.createElement('div');
-                window.className = 'window';
-                window.id = `${type}Window`;
-                
-                // Check if mobile
-                const isMobile = window.innerWidth <= 768;
-                
-                if (isMobile) {
-                    // Full screen on mobile
-                    window.style.cssText = `top: 0; left: 0; width: 100vw; height: 100vh;`;
-                } else {
-                    // Random position for desktop
-                    const x = 100 + Math.random() * 300;
-                    const y = 100 + Math.random() * 200;
-                    window.style.cssText = `top: ${y}px; left: ${x}px; width: 400px; height: 300px;`;
-                }
-
-                window.innerHTML = `
-                    <div class="window-header">
-                        <div class="window-title">${windowData.title}</div>
-                        <div class="window-controls">
-                            <div class="window-control minimize">_</div>
-                            <div class="window-control maximize">□</div>
-                            <div class="window-control close">×</div>
-                        </div>
-                    </div>
-                    <div class="window-content">
-                        <div class="file-list">
-                            ${windowData.files.map(file => `
-                                <div class="file-item" data-file="${file.name}">
-                                    <span class="file-icon">${file.icon}</span>
-                                    <span class="file-name">${file.name}</span>
-                                    <span class="file-size">${file.size}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-
-                document.getElementById('desktop').appendChild(window);
-                this.openWindow(window);
-            }
-
-            openWindow(window) {
-                window.classList.add('active');
-                window.style.zIndex = ++config.windowZIndex;
-                this.activeWindow = window;
-            }
-
-            closeWindow(window) {
-                window.classList.remove('active');
-                if (this.activeWindow === window) {
-                    this.activeWindow = null;
-                }
-                setTimeout(() => window.remove(), 150);
-            }
-
-            setupEventListeners() {
-                // Detect if mobile
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                // Window dragging - disabled on mobile
-                if (!isMobile) {
-                    document.addEventListener('mousedown', (e) => {
-                        if (e.target.classList.contains('window-header') && 
-                            !e.target.classList.contains('window-control')) {
-                            this.startDrag(e);
-                        }
-                    });
-
-                    document.addEventListener('mousemove', (e) => this.drag(e));
-                    document.addEventListener('mouseup', () => this.stopDrag());
-                }
-
-                // Window controls
-                document.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('close')) {
-                        this.closeWindow(e.target.closest('.window'));
-                    } else if (e.target.classList.contains('minimize')) {
-                        const window = e.target.closest('.window');
-                        window.style.display = 'none';
-                    } else if (e.target.classList.contains('maximize')) {
-                        if (!isMobile) { // Don't allow maximize on mobile
-                            this.toggleMaximize(e.target.closest('.window'));
-                        }
-                    }
-                });
-
-                // Touch support for dragging (tablets only)
-                if (!isMobile) {
-                    document.addEventListener('touchstart', (e) => {
-                        if (e.target.classList.contains('window-header') && 
-                            !e.target.classList.contains('window-control')) {
-                            this.startDrag(e.touches[0]);
-                        }
-                    });
-                    
-                    document.addEventListener('touchmove', (e) => {
-                        if (this.draggedWindow) {
-                            e.preventDefault();
-                            this.drag(e.touches[0]);
-                        }
-                    });
-                    
-                    document.addEventListener('touchend', () => this.stopDrag());
-                }
-            }
-
-            startDrag(e) {
-                this.draggedWindow = e.target.closest('.window');
-                const rect = this.draggedWindow.getBoundingClientRect();
-                this.dragOffset.x = (e.clientX || e.pageX) - rect.left;
-                this.dragOffset.y = (e.clientY || e.pageY) - rect.top;
-            }
-
-            drag(e) {
-                if (!this.draggedWindow) return;
-                
-                const x = (e.clientX || e.pageX) - this.dragOffset.x;
-                const y = (e.clientY || e.pageY) - this.dragOffset.y;
-                
-                this.draggedWindow.style.left = Math.max(0, Math.min(x, window.innerWidth - this.draggedWindow.offsetWidth)) + 'px';
-                this.draggedWindow.style.top = Math.max(0, Math.min(y, window.innerHeight - this.draggedWindow.offsetHeight)) + 'px';
-            }
-
-            stopDrag() {
-                this.draggedWindow = null;
-            }
-
-            toggleMaximize(window) {
-                if (window.dataset.maximized === 'true') {
-                    // Restore
-                    const pos = this.windowPositions[window.id];
-                    if (pos) {
-                        window.style.cssText = pos;
-                    }
-                    window.dataset.maximized = 'false';
-                } else {
-                    // Maximize
-                    this.windowPositions[window.id] = window.style.cssText;
-                    window.style.width = '100vw';
-                    window.style.height = '100vh';
-                    window.style.top = '0px';
-                    window.style.left = '0px';
-                    window.dataset.maximized = 'true';
-                }
-            }
+        // CRT control function
+        function setCRT(mode) {
+            // Update desktop
+            document.getElementById('desktop').setAttribute('data-crt', mode);
+            
+            // Update buttons
+            document.querySelectorAll('.crt-controls .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            console.log('CRT mode set to:', mode);
         }
-
-        // ============================================
-        // NETWORK VISUALIZATION CLASS
-        // ============================================
-        class NetworkViewer {
-            constructor() {
-                // Sample network data - replace with real data
-                this.nodes = [
-                    { id: "joel_silver", name: "Joel Silver", type: "producer", connections: 8 },
-                    { id: "james_cameron", name: "James Cameron", type: "director", connections: 5 },
-                    { id: "michael_kamen", name: "Michael Kamen", type: "composer", connections: 9 },
-                    { id: "dean_cundey", name: "Dean Cundey", type: "cinematographer", connections: 7 },
-                    { id: "jerry_bruckheimer", name: "Jerry Bruckheimer", type: "producer", connections: 7 },
-                    { id: "ridley_scott", name: "Ridley Scott", type: "director", connections: 6 },
-                    { id: "john_carpenter", name: "John Carpenter", type: "director", connections: 4 }
-                ];
-                
-                this.links = [
-                    { source: "joel_silver", target: "james_cameron" },
-                    { source: "joel_silver", target: "michael_kamen" },
-                    { source: "james_cameron", target: "dean_cundey" },
-                    { source: "jerry_bruckheimer", target: "ridley_scott" },
-                    { source: "dean_cundey", target: "john_carpenter" },
-                    { source: "michael_kamen", target: "jerry_bruckheimer" }
-                ];
-
-                // Color scheme for different roles
-                this.roleColors = {
-                    producer: "#00ffff",
-                    director: "#ffff00", 
-                    composer: "#ff8800",
-                    cinematographer: "#00ff88"
-                };
-            }
-
-            create(filename) {
-                const window = document.createElement('div');
-                window.className = 'window';
-                window.id = 'networkViewerWindow';
-                window.style.cssText = 'top: 120px; left: 350px; width: 600px; height: 450px;';
-
-                window.innerHTML = `
-                    <div class="window-header">
-                        <div class="window-title">Network Viewer - ${filename}</div>
-                        <div class="window-controls">
-                            <div class="window-control minimize">_</div>
-                            <div class="window-control maximize">□</div>
-                            <div class="window-control close">×</div>
-                        </div>
-                    </div>
-                    <div class="window-content" style="padding: 0;">
-                        <div class="network-viewer">
-                            <div class="network-info">
-                                Loading network topology...<br>
-                                Nodes: ${this.nodes.length}<br>
-                                Connections: ${this.links.length}<br>
-                                Pattern depth: Level 1
-                            </div>
-                            <svg id="networkSvg" width="100%" height="100%"></svg>
-                        </div>
-                    </div>
-                `;
-
-                document.getElementById('desktop').appendChild(window);
-                windowManager.openWindow(window);
-                
-                setTimeout(() => this.render(), 300);
-            }
-
-            render() {
-                const svg = d3.select("#networkSvg");
-                svg.selectAll("*").remove();
-                
-                const container = svg.node().parentNode;
-                const width = container.clientWidth;
-                const height = container.clientHeight;
-
-                // Position nodes in circle initially
-                this.nodes.forEach((d, i) => {
-                    const angle = (i / this.nodes.length) * 2 * Math.PI;
-                    const radius = Math.min(width, height) * 0.3;
-                    d.x = width/2 + Math.cos(angle) * radius;
-                    d.y = height/2 + Math.sin(angle) * radius;
-                });
-
-                const simulation = d3.forceSimulation(this.nodes)
-                    .force("link", d3.forceLink(this.links).id(d => d.id).distance(80))
-                    .force("charge", d3.forceManyBody().strength(-200))
-                    .force("center", d3.forceCenter(width / 2, height / 2))
-                    .alpha(0.3)
-                    .alphaDecay(0.02);
-
-                const g = svg.append("g");
-
-                const link = g.append("g")
-                    .selectAll("line")
-                    .data(this.links)
-                    .enter().append("line")
-                    .attr("stroke", "var(--primary-dark)")
-                    .attr("stroke-width", 2);
-
-                const node = g.append("g")
-                    .selectAll("g")
-                    .data(this.nodes)
-                    .enter().append("g")
-                    .style("cursor", "pointer")
-                    .call(d3.drag()
-                        .on("start", dragstarted)
-                        .on("drag", dragged)
-                        .on("end", dragended));
-
-                node.append("circle")
-                    .attr("r", d => Math.sqrt(d.connections) * 3 + 6)
-                    .attr("fill", d => this.roleColors[d.type] || "var(--primary)")
-                    .attr("stroke", "var(--primary)")
-                    .attr("stroke-width", 1);
-
-                node.append("text")
-                    .attr("dy", -15)
-                    .attr("text-anchor", "middle")
-                    .style("fill", "var(--text)")
-                    .style("font-family", "VT323, monospace")
-                    .style("font-size", "11px")
-                    .text(d => d.name.split(" ")[1] || d.name);
-
-                // Node click handler
-                node.on("click", (event, d) => {
-                    node.selectAll("circle").attr("fill", n => this.roleColors[n.type] || "var(--primary)");
-                    link.attr("stroke", "var(--primary-dark)").attr("stroke-width", 2);
-                    
-                    d3.select(event.currentTarget).select("circle").attr("fill", "#ffffff");
-                    
-                    link.filter(l => l.source.id === d.id || l.target.id === d.id)
-                        .attr("stroke", "var(--primary)")
-                        .attr("stroke-width", 3);
-                });
-
-                simulation.on("tick", () => {
-                    link
-                        .attr("x1", d => d.source.x)
-                        .attr("y1", d => d.source.y)
-                        .attr("x2", d => d.target.x)
-                        .attr("y2", d => d.target.y);
-
-                    node.attr("transform", d => `translate(${d.x},${d.y})`);
-                });
-
-                function dragstarted(event, d) {
-                    if (!event.active) simulation.alphaTarget(0.3).restart();
-                    d.fx = d.x;
-                    d.fy = d.y;
-                }
-
-                function dragged(event, d) {
-                    d.fx = event.x;
-                    d.fy = event.y;
-                }
-
-                function dragended(event, d) {
-                    if (!event.active) simulation.alphaTarget(0);
-                    d.fx = null;
-                    d.fy = null;
-                }
-            }
-        }
-
-        // ============================================
-        // CRT EFFECTS (Optional)
-        // ============================================
-        /*function initCRTEffects() {
-            if (!config.crtEffects.enableInterference && !config.crtEffects.enableFlicker) return;
-
-            // Random interference
-            if (config.crtEffects.enableInterference) {
-                setInterval(() => {
-                    if (Math.random() > config.crtEffects.interferenceFrequency) {
-                        const desktop = document.querySelector('.desktop');
-                        desktop.style.filter = 'blur(0.4px) brightness(1.15) contrast(1.2)';
-                        setTimeout(() => {
-                            desktop.style.filter = 'blur(0.3px) brightness(1.1) contrast(1.1)';
-                        }, 100);
-                    }
-                }, 3000);
-            }
-
-            // Screen flicker
-            if (config.crtEffects.enableFlicker) {
-                setInterval(() => {
-                    if (Math.random() > config.crtEffects.flickerFrequency) {
-                        const desktop = document.querySelector('.desktop');
-                        const currentFilter = desktop.style.filter;
-                        desktop.style.filter = 'blur(0.3px) brightness(1.12) contrast(1.15)';
-                        setTimeout(() => {
-                            desktop.style.filter = currentFilter || 'blur(0.3px) brightness(1.1) contrast(1.1)';
-                        }, 200);
-                    }
-                }, 5000);
-            }
-        }*/
-
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        const windowManager = new WindowManager();
-        const networkViewer = new NetworkViewer();
-
-        // System time
-        function updateSystemTime() {
-            const now = new Date();
-            document.getElementById('systemTime').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-        }
-        setInterval(updateSystemTime, 1000);
-        updateSystemTime();
 
         // Theme cycling
-        document.getElementById('themeButton').addEventListener('click', () => {
-            config.currentTheme = (config.currentTheme + 1) % config.themes.length;
-            document.body.setAttribute('data-theme', config.themes[config.currentTheme]);
-        });
+        function cycleTheme() {
+            state.currentTheme = (state.currentTheme + 1) % state.themes.length;
+            document.body.setAttribute('data-theme', state.themes[state.currentTheme]);
+        }
 
-        // Folder clicks
-        document.querySelectorAll('.folder').forEach(folder => {
-            folder.addEventListener('click', function() {
-                windowManager.createWindow(this.dataset.folder);
-            });
-        });
+        // Initialize
+        function init() {
+            // Remove boot screen
+            setTimeout(() => document.getElementById('boot').classList.add('hidden'), 3000);
+            
+            // Update time
+            setInterval(() => {
+                document.getElementById('time').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+            }, 1000);
 
-        // File clicks
-        document.addEventListener('click', (e) => {
-            const fileItem = e.target.closest('.file-item');
-            if (fileItem && fileItem.dataset.file && fileItem.dataset.file.endsWith('.dat')) {
-                // Close existing network viewer
-                const existing = document.getElementById('networkViewerWindow');
-                if (existing) existing.remove();
-                
-                networkViewer.create(fileItem.dataset.file);
+            // Window events
+            document.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('click', handleClick);
+        }
+
+        // Window management
+        function openWindow(type) {
+            let win = document.getElementById(type + 'Window');
+            if (win) {
+                win.style.zIndex = ++state.zIndex;
+                return;
             }
-        });
 
-        // Initialize CRT effects
-        initCRTEffects();
+            win = document.createElement('div');
+            win.className = 'window active';
+            win.id = type + 'Window';
+            win.style.cssText = `top: ${100 + Math.random() * 200}px; left: ${100 + Math.random() * 300}px; width: 400px; height: 300px; z-index: ${++state.zIndex};`;
+            
+            const files = state.files[type] || [];
+            win.innerHTML = `
+                <div class="window-header">
+                    <div>${type.toUpperCase()} - Directory</div>
+                    <div class="window-close">×</div>
+                </div>
+                <div class="window-content">
+                    ${files.map(f => `
+                        <div class="file-item" data-file="${f.name}">
+                            <span class="file-icon">${f.icon}</span>
+                            <span class="file-name">${f.name}</span>
+                            <span class="file-size">${f.size}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('desktop').appendChild(win);
+        }
 
-        // Remove boot screen
-        setTimeout(() => {
-            document.getElementById('bootScreen').style.display = 'none';
-        }, config.bootDuration);
+        // Event handlers
+        function handleMouseDown(e) {
+            if (e.target.classList.contains('window-header')) {
+                const win = e.target.closest('.window');
+                state.draggedWindow = win;
+                state.dragOffset = {
+                    x: e.clientX - win.offsetLeft,
+                    y: e.clientY - win.offsetTop
+                };
+                win.style.zIndex = ++state.zIndex;
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (state.draggedWindow && window.innerWidth > 768) {
+                state.draggedWindow.style.left = (e.clientX - state.dragOffset.x) + 'px';
+                state.draggedWindow.style.top = (e.clientY - state.dragOffset.y) + 'px';
+            }
+        }
+
+        function handleMouseUp() {
+            state.draggedWindow = null;
+        }
+
+        function handleClick(e) {
+            if (e.target.classList.contains('window-close')) {
+                e.target.closest('.window').remove();
+            } else if (e.target.closest('.file-item')?.dataset.file.endsWith('.dat')) {
+                openNetworkViewer(e.target.closest('.file-item').dataset.file);
+            }
+        }
+
+        // Network viewer
+        function openNetworkViewer(filename) {
+            const existing = document.getElementById('networkWindow');
+            if (existing) existing.remove();
+
+            const win = document.createElement('div');
+            win.className = 'window active';
+            win.id = 'networkWindow';
+            win.style.cssText = `top: 120px; left: 350px; width: 600px; height: 450px; z-index: ${++state.zIndex};`;
+            
+            win.innerHTML = `
+                <div class="window-header">
+                    <div>Network Viewer - ${filename}</div>
+                    <div class="window-close">×</div>
+                </div>
+                <div class="window-content" style="padding: 0;">
+                    <svg id="network" width="100%" height="100%"></svg>
+                </div>
+            `;
+            
+            document.getElementById('desktop').appendChild(win);
+            
+            // Simple D3 network
+            const svg = d3.select('#network');
+            const width = 600, height = 415;
+            
+            const nodes = [
+                {id: 'A', x: width/2, y: height/2},
+                {id: 'B', x: width/3, y: height/3},
+                {id: 'C', x: 2*width/3, y: height/3},
+                {id: 'D', x: width/3, y: 2*height/3},
+                {id: 'E', x: 2*width/3, y: 2*height/3}
+            ];
+            
+            const links = [
+                {source: nodes[0], target: nodes[1]},
+                {source: nodes[0], target: nodes[2]},
+                {source: nodes[0], target: nodes[3]},
+                {source: nodes[0], target: nodes[4]}
+            ];
+            
+            svg.selectAll('line')
+                .data(links)
+                .enter().append('line')
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y)
+                .attr('stroke', 'var(--primary-dark)')
+                .attr('stroke-width', 2);
+                
+            svg.selectAll('circle')
+                .data(nodes)
+                .enter().append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 10)
+                .attr('fill', 'var(--primary)');
+        }
+
+        // Start
+        init();
     </script>
 </body>
 </html>
