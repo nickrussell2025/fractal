@@ -48,6 +48,13 @@
         #desktop[data-crt="off"] .scanlines {
             display: none;
         }
+        
+        /* IMPORTANT: Ensure buttons are visible on dark background */
+        #desktop[data-crt="off"] .btn {
+            background: var(--bg) !important;
+            border-color: var(--primary) !important;
+            color: var(--primary) !important;
+        }
 
         /* CRT MINIMAL - Subtle effects */
         #desktop[data-crt="minimal"] {
@@ -124,6 +131,7 @@
             align-items: center;
             justify-content: center;
             font: 12px 'VT323', monospace;
+            position: relative; /* Add this */
         }
         .btn:hover { background: var(--primary); color: var(--bg); }
         .btn.active { background: var(--primary); color: var(--bg); }
@@ -148,6 +156,7 @@
             color: var(--primary-dim);
             font-size: 24px;
             opacity: 0.3;
+            pointer-events: none; /* This makes it clickable through! */
         }
 
         /* Folders */
@@ -226,17 +235,47 @@
 
         /* Mobile */
         @media (max-width: 768px) {
-            #desktop { filter: none !important; }
+            #desktop { 
+                filter: none !important;
+                height: 100vh !important;
+                position: fixed !important;
+                overflow: hidden !important;
+            }
             .scanlines { display: none !important; }
             .folder { width: 60px; }
             .folder-icon { width: 40px; height: 32px; }
             .folder-label { font-size: 10px; }
             .system-info { font-size: 10px; top: 5px; right: 5px; }
-            .watermark { font-size: 16px; }
-            .window { width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; border: none; }
+            .watermark { 
+                font-size: 16px;
+                bottom: 60px !important; /* Move up more */
+                display: block !important; /* Ensure it shows */
+                z-index: 50; /* Make sure it's visible */
+            }
+            .window { 
+                width: 100vw !important; 
+                height: 100vh !important; 
+                top: 0 !important; 
+                left: 0 !important; 
+                border: none;
+                position: fixed !important;
+                max-height: 100vh !important;
+            }
             .window-header { cursor: default; }
-            .controls { bottom: 10px; }
+            .controls { 
+                bottom: 10px !important;
+                position: fixed !important; /* Fixed to viewport, not desktop */
+                left: 20px !important;
+                right: 20px !important;
+                width: auto !important;
+                z-index: 100; /* Above watermark */
+            }
             .btn { width: 35px; height: 35px; font-size: 10px; }
+            
+            /* Fix network viewer on mobile */
+            .network-viewer {
+                height: calc(100vh - 35px) !important;
+            }
         }
     </style>
 </head>
@@ -425,56 +464,156 @@
             const win = document.createElement('div');
             win.className = 'window active';
             win.id = 'networkWindow';
-            win.style.cssText = `top: 120px; left: 350px; width: 600px; height: 450px; z-index: ${++state.zIndex};`;
+            
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                win.style.cssText = `top: 0; left: 0; width: 100vw; height: 100vh; z-index: ${++state.zIndex};`;
+            } else {
+                win.style.cssText = `top: 120px; left: 350px; width: 600px; height: 450px; z-index: ${++state.zIndex};`;
+            }
             
             win.innerHTML = `
                 <div class="window-header">
                     <div>Network Viewer - ${filename}</div>
                     <div class="window-close">×</div>
                 </div>
-                <div class="window-content" style="padding: 0;">
-                    <svg id="network" width="100%" height="100%"></svg>
+                <div class="window-content" style="padding: 0; overflow: hidden;">
+                    <div class="network-viewer" style="width: 100%; height: 100%; position: relative;">
+                        <div class="network-info" style="position: absolute; top: 10px; left: 10px; background: var(--bg); padding: 8px; border: 1px solid var(--primary); font-size: 12px; z-index: 10;">
+                            Loading network topology...<br>
+                            Nodes: 7<br>
+                            Connections: 6<br>
+                            Pattern depth: Level 1
+                        </div>
+                        <svg id="network" style="width: 100%; height: 100%; display: block;"></svg>
+                    </div>
                 </div>
             `;
             
             document.getElementById('desktop').appendChild(win);
             
-            // Simple D3 network
-            const svg = d3.select('#network');
-            const width = 600, height = 415;
-            
-            const nodes = [
-                {id: 'A', x: width/2, y: height/2},
-                {id: 'B', x: width/3, y: height/3},
-                {id: 'C', x: 2*width/3, y: height/3},
-                {id: 'D', x: width/3, y: 2*height/3},
-                {id: 'E', x: 2*width/3, y: 2*height/3}
-            ];
-            
-            const links = [
-                {source: nodes[0], target: nodes[1]},
-                {source: nodes[0], target: nodes[2]},
-                {source: nodes[0], target: nodes[3]},
-                {source: nodes[0], target: nodes[4]}
-            ];
-            
-            svg.selectAll('line')
-                .data(links)
-                .enter().append('line')
-                .attr('x1', d => d.source.x)
-                .attr('y1', d => d.source.y)
-                .attr('x2', d => d.target.x)
-                .attr('y2', d => d.target.y)
-                .attr('stroke', 'var(--primary-dark)')
-                .attr('stroke-width', 2);
+            // Enhanced D3 network visualization
+            setTimeout(() => {
+                const svg = d3.select('#network');
+                const container = document.querySelector('.network-viewer');
+                const rect = container.getBoundingClientRect();
+                const width = rect.width || 600;
+                const height = rect.height || 415;
                 
-            svg.selectAll('circle')
-                .data(nodes)
-                .enter().append('circle')
-                .attr('cx', d => d.x)
-                .attr('cy', d => d.y)
-                .attr('r', 10)
-                .attr('fill', 'var(--primary)');
+                // More realistic network data
+                const nodes = [
+                    { id: "joel_silver", name: "Joel Silver", type: "producer", connections: 8 },
+                    { id: "james_cameron", name: "James Cameron", type: "director", connections: 5 },
+                    { id: "michael_kamen", name: "Michael Kamen", type: "composer", connections: 9 },
+                    { id: "dean_cundey", name: "Dean Cundey", type: "cinematographer", connections: 7 },
+                    { id: "jerry_bruckheimer", name: "Jerry Bruckheimer", type: "producer", connections: 7 },
+                    { id: "ridley_scott", name: "Ridley Scott", type: "director", connections: 6 },
+                    { id: "john_carpenter", name: "John Carpenter", type: "director", connections: 4 }
+                ];
+                
+                const links = [
+                    { source: "joel_silver", target: "james_cameron" },
+                    { source: "joel_silver", target: "michael_kamen" },
+                    { source: "james_cameron", target: "dean_cundey" },
+                    { source: "jerry_bruckheimer", target: "ridley_scott" },
+                    { source: "dean_cundey", target: "john_carpenter" },
+                    { source: "michael_kamen", target: "jerry_bruckheimer" }
+                ];
+
+                const roleColors = {
+                    producer: "#00ffff",
+                    director: "#ffff00", 
+                    composer: "#ff8800",
+                    cinematographer: "#00ff88"
+                };
+
+                // Position nodes in circle initially
+                nodes.forEach((d, i) => {
+                    const angle = (i / nodes.length) * 2 * Math.PI;
+                    const radius = Math.min(width, height) * 0.3;
+                    d.x = width/2 + Math.cos(angle) * radius;
+                    d.y = height/2 + Math.sin(angle) * radius;
+                });
+
+                const simulation = d3.forceSimulation(nodes)
+                    .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+                    .force("charge", d3.forceManyBody().strength(-200))
+                    .force("center", d3.forceCenter(width / 2, height / 2))
+                    .alpha(0.3)
+                    .alphaDecay(0.02);
+
+                const g = svg.append("g");
+
+                const link = g.append("g")
+                    .selectAll("line")
+                    .data(links)
+                    .enter().append("line")
+                    .attr("stroke", "var(--primary-dark)")
+                    .attr("stroke-width", 2);
+
+                const node = g.append("g")
+                    .selectAll("g")
+                    .data(nodes)
+                    .enter().append("g")
+                    .style("cursor", "pointer")
+                    .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended));
+
+                node.append("circle")
+                    .attr("r", d => Math.sqrt(d.connections) * 3 + 6)
+                    .attr("fill", d => roleColors[d.type] || "var(--primary)")
+                    .attr("stroke", "var(--primary)")
+                    .attr("stroke-width", 1);
+
+                node.append("text")
+                    .attr("dy", -15)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "var(--text)")
+                    .style("font-family", "VT323, monospace")
+                    .style("font-size", "11px")
+                    .text(d => d.name.split(" ")[1] || d.name);
+
+                // Node click handler
+                node.on("click", function(event, d) {
+                    node.selectAll("circle").attr("fill", n => roleColors[n.type] || "var(--primary)");
+                    link.attr("stroke", "var(--primary-dark)").attr("stroke-width", 2);
+                    
+                    d3.select(this).select("circle").attr("fill", "#ffffff");
+                    
+                    link.filter(l => l.source.id === d.id || l.target.id === d.id)
+                        .attr("stroke", "var(--primary)")
+                        .attr("stroke-width", 3);
+                });
+
+                simulation.on("tick", () => {
+                    link
+                        .attr("x1", d => d.source.x)
+                        .attr("y1", d => d.source.y)
+                        .attr("x2", d => d.target.x)
+                        .attr("y2", d => d.target.y);
+
+                    node.attr("transform", d => `translate(${d.x},${d.y})`);
+                });
+
+                function dragstarted(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                }
+
+                function dragended(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }
+            }, 100);
         }
 
         // Start
